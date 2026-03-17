@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LUMIÈRE — Luxury Home & Living</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --sand: #e8dfc8;
+      --deep: #1a1510;
+      --gold: #b8955a;
+      --gold-light: #d4b07a;
+      --muted: #7a6e60;
+      --white: #fdfaf5;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Karla', sans-serif;
+      background: var(--cream);
+      color: var(--deep);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      background: rgba(245, 240, 232, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,149,90,0.18);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem; font-weight: 600; letter-spacing: 0.12em;
+      color: var(--deep); text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Karla', sans-serif; font-size: 0.78rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--deep); text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-right { display: flex; gap: 1.4rem; align-items: center; }
+    .nav-icon { background: none; border: none; cursor: pointer; color: var(--deep); font-size: 1.1rem; transition: color 0.3s; }
+    .nav-icon:hover { color: var(--gold); }
+    .cart-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.75rem; letter-spacing: 0.1em;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding-top: 80px;
+    }
+    .hero-text {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 6rem 3rem 6rem 5rem;
+      animation: fadeUp 1s ease both;
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 6vw, 5.5rem);
+      font-weight: 300; line-height: 1.05;
+      color: var(--deep); margin-bottom: 1.5rem;
+    }
+    .hero-title em { font-style: italic; color: var(--gold); }
+    .hero-sub {
+      font-size: 0.95rem; color: var(--muted); line-height: 1.75;
+      max-width: 380px; margin-bottom: 2.8rem;
+    }
+    .btn-primary {
+      display: inline-block; padding: 1rem 2.5rem;
+      background: var(--deep); color: var(--cream);
+      font-family: 'Karla', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.3s;
+      border: 1px solid var(--deep);
+    }
+    .btn-primary:hover { background: var(--gold); border-color: var(--gold); }
+    .btn-outline {
+      display: inline-block; padding: 1rem 2.5rem;
+      background: transparent; color: var(--deep);
+      font-family: 'Karla', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.3s;
+      border: 1px solid var(--deep); margin-left: 1rem;
+    }
+    .btn-outline:hover { background: var(--deep); color: var(--cream); }
+
+    .hero-visual {
+      position: relative; overflow: hidden;
+      background: var(--sand);
+    }
+    .hero-visual-inner {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #e8dfc8 0%, #d4c9a8 60%, #c4b48a 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-placeholder {
+      width: 60%; aspect-ratio: 3/4;
+      background: linear-gradient(160deg, #f0e8d0 0%, #c8b48a 100%);
+      border-radius: 2px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem; box-shadow: 0 30px 80px rgba(26,21,16,0.18);
+    }
+    .hero-placeholder-icon { font-size: 4rem; opacity: 0.4; }
+    .hero-placeholder-text {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+      color: var(--deep); opacity: 0.5; letter-spacing: 0.1em;
+    }
+    .hero-badge {
+      position: absolute; bottom: 3rem; left: 3rem;
+      background: var(--deep); color: var(--cream);
+      padding: 1rem 1.5rem;
+    }
+    .hero-badge-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+    .hero-badge-value { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; }
+
+    /* MARQUEE */
+    .marquee-bar {
+      background: var(--deep); color: var(--cream);
+      padding: 0.85rem 0; overflow: hidden;
+      white-space: nowrap;
+    }
+    .marquee-track {
+      display: inline-block;
+      animation: marquee 22s linear infinite;
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+    }
+    .marquee-track span { margin: 0 2.5rem; color: var(--gold); }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* SECTION TITLE */
+    .section { padding: 6rem 5rem; }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-eyebrow {
+      font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem; display: block;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300;
+      line-height: 1.15;
+    }
+
+    /* PRODUCT GRID */
+    .products-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+    }
+    .product-card {
+      cursor: pointer; transition: transform 0.4s;
+    }
+    .product-card:hover { transform: translateY(-6px); }
+    .product-card:hover .product-img-inner { transform: scale(1.04); }
+    .product-img {
+      aspect-ratio: 3/4; overflow: hidden;
+      background: var(--sand); margin-bottom: 1.2rem;
+      position: relative;
+    }
+    .product-img-inner {
+      width: 100%; height: 100%;
+      transition: transform 0.6s ease;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .product-tag {
+      position: absolute; top: 1rem; left: 1rem;
+      background: var(--gold); color: var(--cream);
+      font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+    }
+    .wishlist-btn {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(245,240,232,0.85); border: none; cursor: pointer;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: background 0.3s;
+    }
+    .wishlist-btn:hover { background: var(--cream); }
+    .product-emoji { font-size: 4rem; }
+    .product-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.25rem;
+      font-weight: 400; margin-bottom: 0.35rem;
+    }
+    .product-meta {
+      font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted);
+      text-transform: uppercase; margin-bottom: 0.7rem;
+    }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+    .product-price .old { text-decoration: line-through; color: var(--muted); font-size: 0.9rem; margin-right: 0.4rem; }
+    .add-btn {
+      background: none; border: 1px solid var(--deep); cursor: pointer;
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.5rem 1rem; transition: all 0.3s; font-family: 'Karla', sans-serif;
+    }
+    .add-btn:hover { background: var(--deep); color: var(--cream); }
+
+    /* BANNER */
+    .banner {
+      margin: 0 5rem 6rem;
+      background: var(--deep);
+      padding: 5rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .banner-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 300; color: var(--cream);
+      line-height: 1.2;
+    }
+    .banner-title em { color: var(--gold); font-style: italic; }
+    .banner-text { color: rgba(245,240,232,0.65); line-height: 1.75; font-size: 0.9rem; margin-bottom: 2rem; }
+    .btn-gold {
+      display: inline-block; padding: 1rem 2.5rem;
+      background: var(--gold); color: var(--cream);
+      font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+      text-decoration: none; border: 1px solid var(--gold); transition: all 0.3s;
+    }
+    .btn-gold:hover { background: var(--gold-light); border-color: var(--gold-light); }
+    .banner-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold);
+    }
+    .stat-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,240,232,0.5); }
+
+    /* FEATURES */
+    .features { background: var(--sand); }
+    .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+    .feature-item { text-align: center; padding: 2rem 1rem; }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+    .feature-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; margin-bottom: 0.5rem;
+    }
+    .feature-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    /* NEWSLETTER */
+    .newsletter {
+      text-align: center; padding: 6rem 5rem;
+      background: var(--cream);
+    }
+    .newsletter-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300;
+      margin-bottom: 1rem;
+    }
+    .newsletter-sub { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.9rem; }
+    .newsletter-form { display: flex; max-width: 440px; margin: 0 auto; }
+    .newsletter-input {
+      flex: 1; padding: 1rem 1.2rem;
+      border: 1px solid rgba(184,149,90,0.4); border-right: none;
+      background: var(--white); font-family: 'Karla', sans-serif; font-size: 0.85rem;
+      outline: none; color: var(--deep);
+    }
+    .newsletter-input::placeholder { color: var(--muted); }
+    .newsletter-input:focus { border-color: var(--gold); }
+    .newsletter-btn {
+      padding: 1rem 1.8rem; background: var(--gold); border: 1px solid var(--gold);
+      color: var(--cream); cursor: pointer; font-family: 'Karla', sans-serif;
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      transition: background 0.3s;
+    }
+    .newsletter-btn:hover { background: var(--deep); border-color: var(--deep); }
+
+    /* FOOTER */
+    footer {
+      background: var(--deep); color: rgba(245,240,232,0.7);
+      padding: 4rem 5rem 2rem;
+    }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+    .footer-brand-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--cream);
+      margin-bottom: 1rem;
+    }
+    .footer-brand-name span { color: var(--gold); }
+    .footer-desc { font-size: 0.82rem; line-height: 1.75; max-width: 260px; }
+    .footer-heading {
+      font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 0.7rem; }
+    .footer-links a {
+      font-size: 0.85rem; color: rgba(245,240,232,0.6);
+      text-decoration: none; transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-bottom {
+      border-top: 1px solid rgba(245,240,232,0.1); padding-top: 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.75rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .section { padding: 4rem 2rem; }
+      .products-grid { grid-template-columns: 1fr 1fr; }
+      .banner { margin: 0 2rem 4rem; padding: 3rem; grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">LUMI<span>È</span>RE</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="products.html">Shop</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-icon" title="Search">🔍</button>
+    <button class="nav-icon cart-badge" title="Cart" onclick="alert('Cart: 0 items')">🛒 <span>0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">New Collection — Spring 2026</p>
+    <h1 class="hero-title">Live in <em>Beautiful</em><br>Spaces</h1>
+    <p class="hero-sub">Curated luxury home objects and living essentials — crafted for those who believe every corner deserves intention.</p>
+    <div>
+      <a href="products.html" class="btn-primary">Explore Collection</a>
+      <a href="contact.html" class="btn-outline">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-visual-inner">
+      <div class="hero-placeholder">
+        <div class="hero-placeholder-icon">🕯️</div>
+        <div class="hero-placeholder-text">Lumière Living</div>
+      </div>
+    </div>
+    <div class="hero-badge">
+      <div class="hero-badge-label">Est.</div>
+      <div class="hero-badge-value">2019</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    Free shipping over ₹2,999 <span>✦</span> New Spring Collection <span>✦</span> Handcrafted with love <span>✦</span> 30-day returns <span>✦</span> Sustainably sourced <span>✦</span> Free shipping over ₹2,999 <span>✦</span> New Spring Collection <span>✦</span> Handcrafted with love <span>✦</span> 30-day returns <span>✦</span> Sustainably sourced <span>✦</span>
+  </div>
+</div>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-eyebrow">Curated for you</span>
+    <h2 class="section-title">Featured Pieces</h2>
+  </div>
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner" style="background:linear-gradient(135deg,#f0e4c8,#d4b07a)">
+          <span class="product-emoji">🕯️</span>
+        </div>
+        <span class="product-tag">New</span>
+        <button class="wishlist-btn">♡</button>
+      </div>
+      <div class="product-name">Amber Dusk Candle</div>
+      <div class="product-meta">Scented · 200g</div>
+      <div class="product-footer">
+        <div class="product-price">₹1,299</div>
+        <button class="add-btn" onclick="alert('Added to cart!')">Add to Cart</button>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner" style="background:linear-gradient(135deg,#dce8e0,#a8c4b0)">
+          <span class="product-emoji">🪴</span>
+        </div>
+        <span class="product-tag">Bestseller</span>
+        <button class="wishlist-btn">♡</button>
+      </div>
+      <div class="product-name">Sage Ceramic Pot</div>
+      <div class="product-meta">Handmade · 5 inch</div>
+      <div class="product-footer">
+        <div class="product-price"><span class="old">₹2,100</span>₹1,749</div>
+        <button class="add-btn" onclick="alert('Added to cart!')">Add to Cart</button>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner" style="background:linear-gradient(135deg,#e8e0d0,#c4b49a)">
+          <span class="product-emoji">🧺</span>
+        </div>
+        <button class="wishlist-btn">♡</button>
+      </div>
+      <div class="product-name">Woven Storage Basket</div>
+      <div class="product-meta">Seagrass · Large</div>
+      <div class="product-footer">
+        <div class="product-price">₹2,499</div>
+        <button class="add-btn" onclick="alert('Added to cart!')">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:3rem">
+    <a href="products.html" class="btn-outline">View All Products</a>
+  </div>
+</section>
+
+<!-- BANNER -->
+<div class="banner">
+  <div>
+    <h2 class="banner-title">Designed for<br><em>Mindful</em> Living</h2>
+    <p class="banner-text">Each piece in our collection is thoughtfully selected — balancing beauty, function, and sustainability. From artisan workshops to your home.</p>
+    <a href="products.html" class="btn-gold">Shop the Collection</a>
+  </div>
+  <div class="banner-stats">
+    <div>
+      <div class="stat-num">2.4K+</div>
+      <div class="stat-label">Happy Customers</div>
+    </div>
+    <div>
+      <div class="stat-num">180+</div>
+      <div class="stat-label">Unique Products</div>
+    </div>
+    <div>
+      <div class="stat-num">42</div>
+      <div class="stat-label">Artisan Partners</div>
+    </div>
+    <div>
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Average Rating</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section features">
+  <div class="features-grid">
+    <div class="feature-item">
+      <span class="feature-icon">🚚</span>
+      <div class="feature-name">Free Shipping</div>
+      <div class="feature-desc">Complimentary delivery on all orders above ₹2,999 across India.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">↩️</span>
+      <div class="feature-name">Easy Returns</div>
+      <div class="feature-desc">Not in love? Return within 30 days, no questions asked.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">🌿</span>
+      <div class="feature-name">Sustainably Made</div>
+      <div class="feature-desc">Responsibly sourced materials and eco-conscious packaging always.</div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">💎</span>
+      <div class="feature-name">Artisan Quality</div>
+      <div class="feature-desc">Every product hand-selected for craftsmanship and design excellence.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <span class="section-eyebrow">Stay in the loop</span>
+  <h2 class="newsletter-title">Join the Lumière Circle</h2>
+  <p class="newsletter-sub">Early access to new arrivals, exclusive offers, and interior inspiration — delivered gently to your inbox.</p>
+  <div class="newsletter-form">
+    <input class="newsletter-input" type="email" placeholder="your@email.com"/>
+    <button class="newsletter-btn" onclick="alert('Thank you for subscribing!')">Subscribe</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">LUMI<span>È</span>RE</div>
+      <p class="footer-desc">Curated luxury home & living essentials for the intentional home. Beautiful things made to last.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Shop</div>
+      <ul class="footer-links">
+        <li><a href="products.html">All Products</a></li>
+        <li><a href="products.html">New Arrivals</a></li>
+        <li><a href="products.html">Bestsellers</a></li>
+        <li><a href="products.html">Sale</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Help</div>
+      <ul class="footer-links">
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Lumière. All rights reserved.</span>
+    <span>Privacy · Terms · Cookies</span>
+  </div>
+</footer>
+
+</body>
+</html>
