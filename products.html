@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — LUMIÈRE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream: #f5f0e8; --sand: #e8dfc8; --deep: #1a1510;
+      --gold: #b8955a; --gold-light: #d4b07a; --muted: #7a6e60; --white: #fdfaf5;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Karla', sans-serif; background: var(--cream); color: var(--deep); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      background: rgba(245,240,232,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,149,90,0.18);
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; letter-spacing: 0.12em; color: var(--deep); text-decoration: none; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--deep); text-decoration: none; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-right { display: flex; gap: 1.4rem; align-items: center; }
+    .nav-icon { background: none; border: none; cursor: pointer; color: var(--deep); font-size: 1.1rem; transition: color 0.3s; }
+    .nav-icon:hover { color: var(--gold); }
+    .cart-count { font-size: 0.75rem; }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 9rem 5rem 3rem;
+      background: linear-gradient(180deg, var(--sand) 0%, var(--cream) 100%);
+      text-align: center;
+    }
+    .page-header-eyebrow { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: block; }
+    .page-header-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300; }
+
+    /* FILTERS & SHOP LAYOUT */
+    .shop-layout { display: grid; grid-template-columns: 250px 1fr; gap: 3rem; padding: 3rem 5rem 6rem; }
+
+    /* SIDEBAR */
+    .sidebar { padding-top: 0.5rem; }
+    .sidebar-section { margin-bottom: 2.5rem; }
+    .sidebar-title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem; }
+    .filter-list { list-style: none; }
+    .filter-list li { margin-bottom: 0.6rem; }
+    .filter-btn {
+      background: none; border: none; cursor: pointer; font-family: 'Karla', sans-serif;
+      font-size: 0.85rem; color: var(--muted); transition: color 0.3s; padding: 0;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .filter-btn:hover, .filter-btn.active { color: var(--deep); }
+    .filter-btn.active::before { content: '✦'; color: var(--gold); font-size: 0.6rem; }
+    .price-range { padding: 0.5rem 0; }
+    .price-slider { width: 100%; accent-color: var(--gold); }
+    .price-labels { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; }
+
+    /* PRODUCT AREA */
+    .products-area {}
+    .products-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem; padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(184,149,90,0.2);
+    }
+    .products-count { font-size: 0.82rem; color: var(--muted); }
+    .sort-select {
+      background: none; border: 1px solid rgba(184,149,90,0.35);
+      font-family: 'Karla', sans-serif; font-size: 0.78rem; color: var(--deep);
+      padding: 0.5rem 1rem; cursor: pointer; outline: none;
+    }
+    .view-toggle { display: flex; gap: 0.5rem; }
+    .view-btn { background: none; border: 1px solid transparent; cursor: pointer; padding: 0.4rem 0.6rem; font-size: 0.9rem; transition: all 0.3s; }
+    .view-btn.active { border-color: var(--gold); color: var(--gold); }
+
+    /* PRODUCT GRID */
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; }
+    .products-grid.list-view { grid-template-columns: 1fr; }
+    .products-grid.list-view .product-card { display: grid; grid-template-columns: 200px 1fr; gap: 1.5rem; }
+    .products-grid.list-view .product-img { aspect-ratio: unset; height: 200px; }
+
+    .product-card { cursor: pointer; transition: transform 0.4s; }
+    .product-card:hover { transform: translateY(-5px); }
+    .product-card:hover .product-img-inner { transform: scale(1.04); }
+    .product-img { aspect-ratio: 3/4; overflow: hidden; background: var(--sand); margin-bottom: 1rem; position: relative; }
+    .product-img-inner { width: 100%; height: 100%; transition: transform 0.6s ease; display: flex; align-items: center; justify-content: center; }
+    .product-tag { position: absolute; top: 1rem; left: 1rem; background: var(--gold); color: var(--cream); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.25rem 0.6rem; }
+    .product-tag.sale { background: #c45; }
+    .wishlist-btn { position: absolute; top: 1rem; right: 1rem; background: rgba(245,240,232,0.85); border: none; cursor: pointer; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: background 0.3s; }
+    .wishlist-btn:hover, .wishlist-btn.loved { background: var(--cream); }
+    .wishlist-btn.loved { color: #c45; }
+    .product-emoji { font-size: 3.5rem; }
+    .product-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: 0.2rem; }
+    .product-meta { font-size: 0.73rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 0.6rem; }
+    .product-rating { font-size: 0.78rem; color: var(--gold); margin-bottom: 0.6rem; }
+    .product-rating span { color: var(--muted); margin-left: 0.3rem; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+    .product-price .old { text-decoration: line-through; color: var(--muted); font-size: 0.9rem; margin-right: 0.3rem; }
+    .add-btn {
+      background: none; border: 1px solid var(--deep); cursor: pointer;
+      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.45rem 0.9rem; transition: all 0.3s; font-family: 'Karla', sans-serif;
+    }
+    .add-btn:hover { background: var(--deep); color: var(--cream); }
+
+    /* QUICK VIEW MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(26,21,16,0.7); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--cream); max-width: 820px; width: 90%;
+      display: grid; grid-template-columns: 1fr 1fr; max-height: 90vh; overflow: auto;
+    }
+    .modal-img { background: var(--sand); display: flex; align-items: center; justify-content: center; min-height: 400px; font-size: 6rem; }
+    .modal-body { padding: 3rem; }
+    .modal-cat { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.7rem; }
+    .modal-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; margin-bottom: 0.5rem; }
+    .modal-rating { color: var(--gold); font-size: 0.85rem; margin-bottom: 1.2rem; }
+    .modal-price { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--deep); margin-bottom: 1.5rem; }
+    .modal-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.75; margin-bottom: 2rem; }
+    .modal-qty { display: flex; align-items: center; gap: 0; margin-bottom: 1.5rem; }
+    .qty-btn { width: 36px; height: 36px; background: var(--sand); border: 1px solid rgba(184,149,90,0.3); cursor: pointer; font-size: 1.1rem; transition: background 0.2s; }
+    .qty-btn:hover { background: var(--gold); color: var(--cream); }
+    .qty-val { width: 44px; height: 36px; border: 1px solid rgba(184,149,90,0.3); border-left: none; border-right: none; background: none; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+    .modal-actions { display: flex; gap: 0.8rem; }
+    .modal-add-btn { flex: 1; padding: 1rem; background: var(--deep); color: var(--cream); border: none; cursor: pointer; font-family: 'Karla', sans-serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; transition: background 0.3s; }
+    .modal-add-btn:hover { background: var(--gold); }
+    .modal-wish-btn { width: 48px; height: 48px; background: none; border: 1px solid var(--deep); cursor: pointer; font-size: 1.1rem; transition: all 0.3s; }
+    .modal-wish-btn:hover { background: #fee; border-color: #c45; }
+    .modal-close { position: absolute; top: 1rem; right: 1.5rem; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--cream); z-index: 201; }
+
+    /* PAGINATION */
+    .pagination { display: flex; justify-content: center; gap: 0.5rem; margin-top: 4rem; }
+    .page-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(184,149,90,0.3); background: none; cursor: pointer; font-family: 'Karla', sans-serif; font-size: 0.85rem; transition: all 0.3s; }
+    .page-btn:hover, .page-btn.active { background: var(--deep); color: var(--cream); border-color: var(--deep); }
+
+    /* FOOTER */
+    footer { background: var(--deep); color: rgba(245,240,232,0.7); padding: 3rem 5rem 2rem; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; padding-top: 1.5rem; border-top: 1px solid rgba(245,240,232,0.1); }
+
+    @media (max-width: 900px) {
+      .shop-layout { grid-template-columns: 1fr; padding: 2rem; }
+      .sidebar { display: none; }
+      .products-grid { grid-template-columns: 1fr 1fr; }
+      .page-header { padding: 8rem 2rem 2.5rem; }
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">LUMI<span>È</span>RE</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html" class="active">Shop</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-icon">🔍</button>
+    <button class="nav-icon cart-count" id="cartBtn">🛒 <span id="cartCount">0</span></button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <span class="page-header-eyebrow">Spring 2026</span>
+  <h1 class="page-header-title">The Collection</h1>
+</div>
+
+<div class="shop-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Category</div>
+      <ul class="filter-list">
+        <li><button class="filter-btn active" onclick="filterCategory(this,'all')">All Products</button></li>
+        <li><button class="filter-btn" onclick="filterCategory(this,'candles')">Candles & Fragrance</button></li>
+        <li><button class="filter-btn" onclick="filterCategory(this,'ceramics')">Ceramics & Pottery</button></li>
+        <li><button class="filter-btn" onclick="filterCategory(this,'textiles')">Textiles & Linens</button></li>
+        <li><button class="filter-btn" onclick="filterCategory(this,'decor')">Home Décor</button></li>
+        <li><button class="filter-btn" onclick="filterCategory(this,'storage')">Storage & Organisation</button></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Price Range</div>
+      <div class="price-range">
+        <input type="range" min="0" max="10000" value="10000" class="price-slider" id="priceSlider" oninput="document.getElementById('priceMax').textContent='₹'+this.value.toLocaleString()"/>
+        <div class="price-labels"><span>₹0</span><span id="priceMax">₹10,000</span></div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Sort By</div>
+      <ul class="filter-list">
+        <li><button class="filter-btn active">Featured</button></li>
+        <li><button class="filter-btn">Price: Low to High</button></li>
+        <li><button class="filter-btn">Price: High to Low</button></li>
+        <li><button class="filter-btn">Newest First</button></li>
+        <li><button class="filter-btn">Best Rated</button></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- PRODUCTS -->
+  <div class="products-area">
+    <div class="products-toolbar">
+      <span class="products-count" id="prodCount">Showing 9 products</span>
+      <div style="display:flex;gap:1rem;align-items:center">
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="setView('grid',this)">⊞</button>
+          <button class="view-btn" onclick="setView('list',this)">☰</button>
+        </div>
+        <select class="sort-select">
+          <option>Featured</option>
+          <option>Price: Low to High</option>
+          <option>Price: High to Low</option>
+          <option>Newest</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+
+      <!-- Card 1 -->
+      <div class="product-card" data-cat="candles">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#f0e4c8,#d4b07a)">
+            <span class="product-emoji">🕯️</span>
+          </div>
+          <span class="product-tag">New</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Amber Dusk Candle</div>
+        <div class="product-meta">Scented · 200g · Soy Wax</div>
+        <div class="product-rating">★★★★★ <span>(128)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹1,299</div>
+          <button class="add-btn" onclick="openModal('Amber Dusk Candle','Candles','₹1,299','🕯️','A warm amber and sandalwood scent that fills any room with golden light. Hand-poured, 60hr burn time.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="product-card" data-cat="ceramics">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#dce8e0,#a8c4b0)">
+            <span class="product-emoji">🪴</span>
+          </div>
+          <span class="product-tag">Bestseller</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Sage Ceramic Pot</div>
+        <div class="product-meta">Handmade · 5 inch · Glazed</div>
+        <div class="product-rating">★★★★★ <span>(97)</span></div>
+        <div class="product-footer">
+          <div class="product-price"><span class="old">₹2,100</span>₹1,749</div>
+          <button class="add-btn" onclick="openModal('Sage Ceramic Pot','Ceramics','₹1,749','🪴','Hand-thrown stoneware with a sage green glaze. Each piece is unique — slight variations make it yours.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="product-card" data-cat="storage">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#e8e0d0,#c4b49a)">
+            <span class="product-emoji">🧺</span>
+          </div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Woven Storage Basket</div>
+        <div class="product-meta">Seagrass · Large</div>
+        <div class="product-rating">★★★★☆ <span>(64)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹2,499</div>
+          <button class="add-btn" onclick="openModal('Woven Storage Basket','Storage','₹2,499','🧺','Handwoven seagrass basket. Perfect for blankets, laundry, or as a decorative centrepiece.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="product-card" data-cat="textiles">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#e8dce8,#c8a8c8)">
+            <span class="product-emoji">🛏️</span>
+          </div>
+          <span class="product-tag sale">Sale</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Linen Throw Blanket</div>
+        <div class="product-meta">100% Linen · 150×200cm</div>
+        <div class="product-rating">★★★★★ <span>(212)</span></div>
+        <div class="product-footer">
+          <div class="product-price"><span class="old">₹4,200</span>₹2,999</div>
+          <button class="add-btn" onclick="openModal('Linen Throw Blanket','Textiles','₹2,999','🛏️','Breathable 100% stonewashed linen. Gets softer with every wash. Available in 6 muted tones.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="product-card" data-cat="decor">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#f0e8d8,#d8c8a8)">
+            <span class="product-emoji">🪞</span>
+          </div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Arch Rattan Mirror</div>
+        <div class="product-meta">Rattan Frame · 60×90cm</div>
+        <div class="product-rating">★★★★★ <span>(83)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹5,499</div>
+          <button class="add-btn" onclick="openModal('Arch Rattan Mirror','Décor','₹5,499','🪞','Natural rattan arch mirror. Adds warmth and a Balinese touch to any bedroom or hallway.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="product-card" data-cat="candles">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#d8e8f0,#a0c4d8)">
+            <span class="product-emoji">🫙</span>
+          </div>
+          <span class="product-tag">New</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Reed Diffuser Set</div>
+        <div class="product-meta">Eucalyptus · 100ml · 6 reeds</div>
+        <div class="product-rating">★★★★☆ <span>(49)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹1,849</div>
+          <button class="add-btn" onclick="openModal('Reed Diffuser Set','Candles & Fragrance','₹1,849','🫙','Eucalyptus & mint diffuser oil with 6 natural rattan reeds. Lasts up to 8 weeks.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="product-card" data-cat="ceramics">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#f8f0e0,#e0c88a)">
+            <span class="product-emoji">☕</span>
+          </div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Stoneware Mug Set</div>
+        <div class="product-meta">Set of 4 · 280ml · Dishwasher safe</div>
+        <div class="product-rating">★★★★★ <span>(175)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹3,299</div>
+          <button class="add-btn" onclick="openModal('Stoneware Mug Set','Ceramics','₹3,299','☕','Set of 4 hand-stamped stoneware mugs. Warm sand finish, comfortable handle, perfect weight.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="product-card" data-cat="decor">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#e0e8d8,#b8d0a0)">
+            <span class="product-emoji">🌿</span>
+          </div>
+          <span class="product-tag sale">Sale</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Dried Pampas Bunch</div>
+        <div class="product-meta">Natural · Preserved · Set of 3</div>
+        <div class="product-rating">★★★★☆ <span>(92)</span></div>
+        <div class="product-footer">
+          <div class="product-price"><span class="old">₹1,600</span>₹1,099</div>
+          <button class="add-btn" onclick="openModal('Dried Pampas Bunch','Décor','₹1,099','🌿','Naturally preserved pampas grass. Lasts 2–3 years without water. Perfect for vases or corners.')">Quick View</button>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="product-card" data-cat="textiles">
+        <div class="product-img">
+          <div class="product-img-inner" style="background:linear-gradient(135deg,#f0dcd8,#d8a898)">
+            <span class="product-emoji">🧣</span>
+          </div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-name">Handwoven Table Runner</div>
+        <div class="product-meta">Cotton · 40×180cm · Terracotta</div>
+        <div class="product-rating">★★★★★ <span>(61)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹1,599</div>
+          <button class="add-btn" onclick="openModal('Handwoven Table Runner','Textiles','₹1,599','🧣','Hand-loomed cotton runner in warm terracotta. Fringed ends, machine washable at 30°C.')">Quick View</button>
+        </div>
+      </div>
+
+    </div><!-- end grid -->
+
+    <div class="pagination">
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK VIEW MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">✕</button>
+  <div class="modal">
+    <div class="modal-img" id="modalImg">🕯️</div>
+    <div class="modal-body">
+      <div class="modal-cat" id="modalCat">Category</div>
+      <div class="modal-name" id="modalName">Product Name</div>
+      <div class="modal-rating">★★★★★ 4.9 (128 reviews)</div>
+      <div class="modal-price" id="modalPrice">₹1,299</div>
+      <div class="modal-desc" id="modalDesc">Product description goes here.</div>
+      <div class="modal-qty">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <input class="qty-val" id="qtyVal" type="text" value="1" readonly/>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-add-btn" onclick="addToCartFromModal()">Add to Cart</button>
+        <button class="modal-wish-btn">♡</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+    <span>© 2026 Lumière. All rights reserved.</span>
+    <div style="display:flex;gap:2rem">
+      <a href="index.html" style="color:rgba(245,240,232,0.6);text-decoration:none;font-size:0.75rem">Home</a>
+      <a href="contact.html" style="color:rgba(245,240,232,0.6);text-decoration:none;font-size:0.75rem">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let cartCount = 0;
+
+  function addToCartFromModal() {
+    const name = document.getElementById('modalName').textContent;
+    const qty = parseInt(document.getElementById('qtyVal').value);
+    cartCount += qty;
+    document.getElementById('cartCount').textContent = cartCount;
+    document.getElementById('modalOverlay').classList.remove('open');
+    showToast(`${qty}× ${name} added to cart!`);
+  }
+
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#1a1510;color:#f5f0e8;padding:1rem 1.5rem;font-size:0.82rem;letter-spacing:0.05em;z-index:999;border-left:3px solid #b8955a;animation:fadeUp 0.4s ease';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+
+  function changeQty(d) {
+    const el = document.getElementById('qtyVal');
+    el.value = Math.max(1, parseInt(el.value) + d);
+  }
+
+  function openModal(name, cat, price, emoji, desc) {
+    document.getElementById('modalName').textContent = name;
+    document.getElementById('modalCat').textContent = cat;
+    document.getElementById('modalPrice').textContent = price;
+    document.getElementById('modalImg').textContent = emoji;
+    document.getElementById('modalDesc').textContent = desc;
+    document.getElementById('qtyVal').value = 1;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay'))
+      document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function toggleWish(btn) {
+    btn.classList.toggle('loved');
+    btn.textContent = btn.classList.contains('loved') ? '♥' : '♡';
+  }
+
+  function setView(mode, btn) {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const grid = document.getElementById('productsGrid');
+    grid.classList.toggle('list-view', mode === 'list');
+  }
+
+  function filterCategory(btn, cat) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cards = document.querySelectorAll('.product-card');
+    let count = 0;
+    cards.forEach(c => {
+      const show = cat === 'all' || c.dataset.cat === cat;
+      c.style.display = show ? '' : 'none';
+      if (show) count++;
+    });
+    document.getElementById('prodCount').textContent = `Showing ${count} product${count !== 1 ? 's' : ''}`;
+  }
+</script>
+</body>
+</html>
